@@ -2,7 +2,8 @@
 import { computed, ref, onMounted, onBeforeUnmount } from 'vue'
 import { useCharacterStore } from '@/stores/characterStore'
 import { getFactionName, getRoleName } from '@/utils/colors'
-import { ElMessage, Close } from 'element-plus'
+import { ElMessage } from 'element-plus'
+import { Close } from '@element-plus/icons-vue'
 import RelationHistoryModal from '@/components/RelationHistoryModal.vue'
 
 const characterStore = useCharacterStore()

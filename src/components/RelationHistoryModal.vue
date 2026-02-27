@@ -20,12 +20,15 @@ const props = defineProps({
     default: null
   }
 })
-
 const emit = defineEmits(['update:visible'])
 
 const handleClose = () => {
   emit('update:visible', false)
 }
+
+// 移动端判断
+const isMobile = () => { return window.innerWidth < 768 ;}
+
 
 // 解析 JSON 格式的事件列表
 const parseData = (text) => {
@@ -101,10 +104,11 @@ watch(() => props.content, (newVal) => {
 <template>
   <el-dialog
     :model-value="visible"
-    title="人物关系经历"
-    width="600px"
+    :title="isMobile() ? '关系经历' : '人物关系经历'"
+    :width="isMobile() ? '90%' : '600px'"
     destroy-on-close
     :append-to-body="true"
+    :class="{ 'mobile-dialog': isMobile() }"
     @update:model-value="emit('update:visible', $event)"
   >
       <div class="relation-history-content" @click.stop>
@@ -303,5 +307,121 @@ watch(() => props.content, (newVal) => {
 
 .relation-history-content::-webkit-scrollbar-thumb:hover {
   background: #a8a8a8;
+}
+
+/* 移动端适配 */
+@media (max-width: 767px) {
+  .relation-history-content {
+    max-height: 65vh;
+    padding: 12px 0;
+  }
+
+  .summary-section {
+    margin-bottom: 16px;
+    padding: 16px;
+  }
+
+  .summary-title {
+    font-size: 14px;
+    margin-bottom: 8px;
+  }
+
+  .summary-text {
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  .events-list {
+    gap: 12px;
+  }
+
+  .events-title {
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+
+  .event-item {
+    padding: 12px;
+    border-left-width: 2px;
+  }
+
+  .event-header {
+    gap: 6px;
+    margin-bottom: 6px;
+  }
+
+  .event-number {
+    font-size: 16px;
+    min-width: 20px;
+  }
+
+  .event-time {
+    font-size: 11px;
+    padding: 1px 6px;
+  }
+
+  .event-description {
+    font-size: 13px;
+    line-height: 1.5;
+    margin-bottom: 6px;
+  }
+
+  .event-impact {
+    font-size: 11px;
+    padding: 5px 10px;
+    gap: 5px;
+  }
+
+  .event-impact span {
+    font-size: 12px;
+  }
+
+  .loading-text {
+    padding: 30px 16px;
+    font-size: 13px;
+  }
+
+  /* 移动端弹窗样式 */
+  .mobile-dialog {
+    width: 90% !important;
+    margin: 20px auto !important;
+  }
+
+  :deep(.el-dialog__header) {
+    padding: 16px 20px;
+  }
+
+  :deep(.el-dialog__title) {
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  :deep(.el-dialog__body) {
+    padding: 16px 20px;
+    max-height: 65vh;
+    overflow-y: auto;
+  }
+
+  :deep(.el-dialog__footer) {
+    padding: 12px 20px 20px;
+  }
+
+  /* 移动端滚动条样式 */
+  .relation-history-content::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .relation-history-content::-webkit-scrollbar-track {
+    background: #f5f5f5;
+  }
+
+  .relation-history-content::-webkit-scrollbar-thumb {
+    background: #d1d1d1;
+    border-radius: 2px;
+  }
+
+  .relation-history-content::-webkit-scrollbar-thumb:hover {
+    background: #b8b8b8;
+  }
 }
 </style>
