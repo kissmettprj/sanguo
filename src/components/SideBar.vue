@@ -31,6 +31,7 @@ const showRelationHistory = async (relation) => {
     )
     relationHistoryContent.value = history
     relationHistoryPartner.value = relation.character.name
+    characterStore.currentRelation = null
     relationHistoryModal.value = true
   } catch (error) {
     console.error('加载关系经历失败:', error)
@@ -151,16 +152,16 @@ const currentInfo = computed(() => {
         提示：点击相关人物查看关系经历，双击切换为当前人物
       </div>
     </div>
+
+    <!-- 相交经历弹窗 -->
+    <RelationHistoryModal 
+      v-model:visible="relationHistoryModal" 
+      :content="relationHistoryContent"
+      :partner="relationHistoryPartner"
+      :selected-character="characterStore.selectedCharacter"
+    />
   </div>
 </template>
-
-<!-- 相交经历弹窗 -->
-<RelationHistoryModal 
-  v-model:visible="relationHistoryModal" 
-  :content="relationHistoryContent"
-  :partner="relationHistoryPartner"
-  :selected-character="characterStore.selectedCharacter"
-/>
 
 <style scoped>
 .side-bar {

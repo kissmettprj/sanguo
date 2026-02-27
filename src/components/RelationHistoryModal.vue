@@ -1,46 +1,50 @@
 <script setup>
-import { ref } from 'vue'
-import { useCharacterStore } from '@/stores/characterStore'
-import { ElMessage } from 'element-plus'
+import { ref, watch } from 'vue'
 
-const characterStore = useCharacterStore()
-const relationHistoryModal = ref(false)
-const relationHistoryContent = ref('')
-
-const showRelationHistory = async (relation) => {
-  if (!relation.character) return
-  
-  try {
-    const { getRelationHistory } = await import('@/api/llmApi')
-    const history = await getRelationHistory(
-      characterStore.selectedCharacter.name,
-      relation.character.name
-    )
-    relationHistoryContent.value = history
-    relationHistoryModal.value = true
-  } catch (error) {
-    console.error('加载关系经历失败:', error)
-    ElMessage.error('加载关系经历失败')
+defineProps({
+  visible: {
+    type: Boolean,
+    default: false
+  },
+  content: {
+    type: String,
+    default: ''
+  },
+  partner: {
+    type: String,
+    default: ''
+  },
+  selectedCharacter: {
+    type: Object,
+    default: null
   }
+})
+
+const emit = defineEmits(['update:visible'])
+
+const handleClose = () => {
+  emit('update:visible', false)
 }
 </script>
 
 <template>
   <el-dialog
-    v-model="relationHistoryModal"
+    :model-value="visible"
     title="人物关系经历"
     width="500px"
     destroy-on-close
+    @update:model-value="emit('update:visible', $event)"
   >
     <div class="relation-history-content">
       <p class="relation-info">
-        <strong>{{ characterStore.selectedCharacter?.name }}</strong> 与 
-        <strong>{{ relationHistoryModal && relationHistoryContent ? '对方' : '' }}</strong> 的关系：
+        <strong>{{ selectedCharacter?.name }}</strong> 与 
+        <strong>{{ partner }}</strong> 的关系：
       </p>
-      <p class="history-text">{{ relationHistoryContent }}</p>
+      <p v-if="content" class="history-text">{{ content }}</p>
+      <p v-else class="history-text">加载中...</p>
     </div>
     <template #footer>
-      <el-button type="primary" @click="relationHistoryModal = false">
+      <el-button type="primary" @click="handleClose">
         关闭
       </el-button>
     </template>
@@ -56,6 +60,10 @@ const showRelationHistory = async (relation) => {
   margin-bottom: 16px;
   font-size: 14px;
   color: #606266;
+}
+
+.relation-info strong {
+  color: #303133;
 }
 
 .history-text {
