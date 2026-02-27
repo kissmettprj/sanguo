@@ -13,6 +13,7 @@ let simulation = null
 let nodes = null
 let links = null
 let nodeElements = null
+const emit = defineEmits(['character-click'])
 
 const width = 800
 const height = 600
@@ -141,6 +142,7 @@ const handleNodeClick = (event, d) => {
   
   // 加载人物简介和相关人物
   loadCharacterInfo(d)
+  emit('character-click', d)
 }
 
 // 处理双击切换
@@ -261,6 +263,7 @@ onBeforeUnmount(() => {
 // 点击背景清空选择
 const handleBackgroundClick = () => {
   characterStore.clearSelection()
+  emit('character-click', null)
 }
 </script>
 

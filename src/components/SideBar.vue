@@ -7,6 +7,15 @@ import RelationHistoryModal from '@/components/RelationHistoryModal.vue'
 
 const characterStore = useCharacterStore()
 
+const props = defineProps({
+  character: {
+    type: Object,
+    default: null
+  }
+})
+const emit = defineEmits(['character-click'])
+
+const sidebarVisible = computed(() => props.character !== null)
 // 相关人物点击事件（打开弹框）
 const handleRelatedCardClick = (relation) => {
   if (!relation.character) return
@@ -98,7 +107,7 @@ const currentInfo = computed(() => {
 </script>
 
 <template>
-  <div class="side-bar">
+  <div :class="{ 'side-bar':true, 'side-bar-open': sidebarVisible }">
     <div v-if="!currentCharacter" class="empty-state">
       <div class="empty-icon">
         <el-icon><User /></el-icon>
@@ -178,15 +187,8 @@ const currentInfo = computed(() => {
 </template>
 
 <style scoped>
-.side-bar {
-  width: 320px;
-  background: white;
-  border-left: 1px solid #e4e7ed;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.05);
-}
+.side-bar { transition: width 0.3s ease; width: 0; overflow: hidden; cursor: pointer;}
+
 
 .empty-state {
   flex: 1;
@@ -202,6 +204,12 @@ const currentInfo = computed(() => {
   margin-bottom: 20px;
   color: #dcdfe6;
 }
+
+.side-bar-open {
+  width: 320px;
+  cursor: default;
+}
+
 
 .content {
   padding: 20px;
@@ -253,6 +261,12 @@ const currentInfo = computed(() => {
   padding-bottom: 8px;
   border-bottom: 1px solid #ebeef5;
 }
+
+.side-bar-open {
+  width: 320px;
+  cursor: default;
+}
+
 
 .info-content {
   background: #f5f7fa;
