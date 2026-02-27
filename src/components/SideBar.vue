@@ -149,11 +149,12 @@ const currentInfo = computed(() => {
             v-for="relation in displayRelations"
             :key="relation.character?.id"
             class="relation-item"
+            @click.stop="handleRelatedCardClick(relation)"
           >
-            <div class="relation-avatar" @click="handleRelatedCardClick(relation)">
+            <div class="relation-avatar">
               <el-icon size="30"><UserFilled /></el-icon>
             </div>
-            <div class="relation-info" @click="handleRelatedCardClick(relation)">
+            <div class="relation-info">
               <div class="relation-name">{{ relation.character?.name }}</div>
               <div class="relation-type">{{ relation.type }}</div>
             </div>
@@ -208,11 +209,19 @@ const currentInfo = computed(() => {
 .side-bar-open {
   width: 320px;
   cursor: default;
+  overflow-y: auto;
+  overflow-x: hidden;
+  height: 100%;
+  position: relative;
 }
 
 
 .content {
   padding: 20px;
+  padding-bottom: 40px;
+  max-height: calc(100vh - 180px);
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .header {

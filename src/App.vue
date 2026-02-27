@@ -21,9 +21,6 @@ const handleBackgroundClick = () => {
 
 <template>
   <div class="sanguo-app" @click="handleBackgroundClick">
-    <header class="app-header">
-      <h1>图说三国</h1>
-    </header>
     <main class="app-main">
       <ForceGraph @character-click="handleCharacterClick" />
       <SideBar
@@ -40,19 +37,6 @@ const handleBackgroundClick = () => {
   flex-direction: column;
   height: 100vh;
   overflow: hidden;
-}
-
-.app-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  padding: 16px 24px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.app-header h1 {
-  margin: 0;
-  font-size: 24px;
-  font-weight: 600;
 }
 
 .app-main {

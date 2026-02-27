@@ -94,7 +94,7 @@ const renderGraph = () => {
 
   // 添加圆
   nodeElements.append('circle')
-    .attr('r', 25)
+    .attr('r', 35)
     .attr('cursor', 'pointer')
     .on('click', handleNodeClick)
     .on('dblclick', handleNodeDblclick)
@@ -281,7 +281,7 @@ const handleBackgroundClick = () => {
   flex: 1;
   position: relative;
   overflow: hidden;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  background: white;
 }
 
 .force-graph {

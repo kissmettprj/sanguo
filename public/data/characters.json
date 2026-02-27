@@ -101,6 +101,150 @@
       "name": "吕布",
       "faction": "unknown",
       "role": "general"
+    },
+    {
+      "id": 18,
+      "name": "刘禅",
+      "faction": "shu",
+      "role": "lord"
+    },
+    {
+      "id": 19,
+      "name": "黄忠",
+      "faction": "shu",
+      "role": "general"
+    },
+    {
+      "id": 20,
+      "name": "马超",
+      "faction": "shu",
+      "role": "general"
+    },
+    {
+      "id": 21,
+      "name": "曹丕",
+      "faction": "wei",
+      "role": "lord"
+    },
+    {
+      "id": 22,
+      "name": "曹植",
+      "faction": "wei",
+      "role": "general"
+    },
+    {
+      "id": 23,
+      "name": "许攸",
+      "faction": "wei",
+      "role": "minister"
+    },
+    {
+      "id": 24,
+      "name": "典韦",
+      "faction": "wei",
+      "role": "general"
+    },
+    {
+      "id": 25,
+      "name": "孙策",
+      "faction": "wu",
+      "role": "lord"
+    },
+    {
+      "id": 26,
+      "name": "孙尚香",
+      "faction": "wu",
+      "role": "general"
+    },
+    {
+      "id": 27,
+      "name": "孙皓",
+      "faction": "wu",
+      "role": "lord"
+    },
+    {
+      "id": 28,
+      "name": "姜维",
+      "faction": "shu",
+      "role": "general"
+    },
+    {
+      "id": 29,
+      "name": "华佗",
+      "faction": "shu",
+      "role": "doctor"
+    },
+    {
+      "id": 30,
+      "name": "司马师",
+      "faction": "wei",
+      "role": "minister"
+    },
+    {
+      "id": 31,
+      "name": "司马昭",
+      "faction": "wei",
+      "role": "lord"
+    },
+    {
+      "id": 32,
+      "name": "王朗",
+      "faction": "wei",
+      "role": "minister"
+    },
+    {
+      "id": 33,
+      "name": "张辽",
+      "faction": "wei",
+      "role": "general"
+    },
+    {
+      "id": 34,
+      "name": "庞统",
+      "faction": "shu",
+      "role": "minister"
+    },
+    {
+      "id": 35,
+      "name": "魏延",
+      "faction": "shu",
+      "role": "general"
+    },
+    {
+      "id": 36,
+      "name": "甘宁",
+      "faction": "wu",
+      "role": "general"
+    },
+    {
+      "id": 37,
+      "name": "程普",
+      "faction": "wu",
+      "role": "general"
+    },
+    {
+      "id": 38,
+      "name": "陈宫",
+      "faction": "unknown",
+      "role": "general"
+    },
+    {
+      "id": 39,
+      "name": "张角",
+      "faction": "unknown",
+      "role": "leader"
+    },
+    {
+      "id": 40,
+      "name": "貂蝉",
+      "faction": "unknown",
+      "role": "character"
+    },
+    {
+      "id": 41,
+      "name": "孙坚",
+      "faction": "wu",
+      "role": "founder"
     }
   ],
   "relationships": [
@@ -282,6 +426,566 @@
     {
       "source": 15,
       "target": 17,
+      "type": "对手"
+    },
+    {
+      "source": 1,
+      "target": 18,
+      "type": "君臣"
+    },
+    {
+      "source": 1,
+      "target": 19,
+      "type": "同僚"
+    },
+    {
+      "source": 1,
+      "target": 20,
+      "type": "同僚"
+    },
+    {
+      "source": 1,
+      "target": 28,
+      "type": "君臣"
+    },
+    {
+      "source": 1,
+      "target": 29,
+      "type": "医患"
+    },
+    {
+      "source": 1,
+      "target": 34,
+      "type": "君臣"
+    },
+    {
+      "source": 1,
+      "target": 35,
+      "type": "君臣"
+    },
+    {
+      "source": 2,
+      "target": 19,
+      "type": "同僚"
+    },
+    {
+      "source": 2,
+      "target": 20,
+      "type": "同僚"
+    },
+    {
+      "source": 3,
+      "target": 19,
+      "type": "同僚"
+    },
+    {
+      "source": 4,
+      "target": 19,
+      "type": "同僚"
+    },
+    {
+      "source": 4,
+      "target": 20,
+      "type": "同僚"
+    },
+    {
+      "source": 4,
+      "target": 28,
+      "type": "同僚"
+    },
+    {
+      "source": 4,
+      "target": 34,
+      "type": "同僚"
+    },
+    {
+      "source": 4,
+      "target": 35,
+      "type": "同僚"
+    },
+    {
+      "source": 5,
+      "target": 19,
+      "type": "同僚"
+    },
+    {
+      "source": 5,
+      "target": 20,
+      "type": "同僚"
+    },
+    {
+      "source": 6,
+      "target": 21,
+      "type": "君臣"
+    },
+    {
+      "source": 6,
+      "target": 22,
+      "type": "君臣"
+    },
+    {
+      "source": 6,
+      "target": 23,
+      "type": "君臣"
+    },
+    {
+      "source": 6,
+      "target": 24,
+      "type": "君臣"
+    },
+    {
+      "source": 6,
+      "target": 33,
+      "type": "君臣"
+    },
+    {
+      "source": 7,
+      "target": 21,
+      "type": "君臣"
+    },
+    {
+      "source": 7,
+      "target": 22,
+      "type": "君臣"
+    },
+    {
+      "source": 7,
+      "target": 23,
+      "type": "同僚"
+    },
+    {
+      "source": 7,
+      "target": 30,
+      "type": "君臣"
+    },
+    {
+      "source": 7,
+      "target": 31,
+      "type": "君臣"
+    },
+    {
+      "source": 7,
+      "target": 32,
+      "type": "同僚"
+    },
+    {
+      "source": 8,
+      "target": 21,
+      "type": "同僚"
+    },
+    {
+      "source": 8,
+      "target": 22,
+      "type": "同僚"
+    },
+    {
+      "source": 8,
+      "target": 24,
+      "type": "同僚"
+    },
+    {
+      "source": 8,
+      "target": 33,
+      "type": "同僚"
+    },
+    {
+      "source": 9,
+      "target": 21,
+      "type": "同僚"
+    },
+    {
+      "source": 9,
+      "target": 22,
+      "type": "同僚"
+    },
+    {
+      "source": 9,
+      "target": 23,
+      "type": "君臣"
+    },
+    {
+      "source": 9,
+      "target": 32,
+      "type": "同僚"
+    },
+    {
+      "source": 10,
+      "target": 25,
+      "type": "君臣"
+    },
+    {
+      "source": 10,
+      "target": 26,
+      "type": "君臣"
+    },
+    {
+      "source": 10,
+      "target": 27,
+      "type": "君臣"
+    },
+    {
+      "source": 10,
+      "target": 36,
+      "type": "君臣"
+    },
+    {
+      "source": 10,
+      "target": 37,
+      "type": "君臣"
+    },
+    {
+      "source": 11,
+      "target": 25,
+      "type": "同僚"
+    },
+    {
+      "source": 11,
+      "target": 36,
+      "type": "同僚"
+    },
+    {
+      "source": 11,
+      "target": 37,
+      "type": "同僚"
+    },
+    {
+      "source": 12,
+      "target": 25,
+      "type": "同僚"
+    },
+    {
+      "source": 12,
+      "target": 26,
+      "type": "同僚"
+    },
+    {
+      "source": 12,
+      "target": 36,
+      "type": "同僚"
+    },
+    {
+      "source": 12,
+      "target": 37,
+      "type": "同僚"
+    },
+    {
+      "source": 13,
+      "target": 25,
+      "type": "同僚"
+    },
+    {
+      "source": 13,
+      "target": 36,
+      "type": "同僚"
+    },
+    {
+      "source": 14,
+      "target": 25,
+      "type": "同僚"
+    },
+    {
+      "source": 14,
+      "target": 36,
+      "type": "同僚"
+    },
+    {
+      "source": 15,
+      "target": 38,
+      "type": "同僚"
+    },
+    {
+      "source": 16,
+      "target": 40,
+      "type": "同僚"
+    },
+    {
+      "source": 17,
+      "target": 38,
+      "type": "主从"
+    },
+    {
+      "source": 17,
+      "target": 40,
+      "type": "主从"
+    },
+    {
+      "source": 1,
+      "target": 6,
+      "type": "对手"
+    },
+    {
+      "source": 1,
+      "target": 10,
+      "type": "盟友"
+    },
+    {
+      "source": 2,
+      "target": 6,
+      "type": "对手"
+    },
+    {
+      "source": 4,
+      "target": 6,
+      "type": "对手"
+    },
+    {
+      "source": 4,
+      "target": 10,
+      "type": "盟友"
+    },
+    {
+      "source": 4,
+      "target": 11,
+      "type": "盟友"
+    },
+    {
+      "source": 6,
+      "target": 10,
+      "type": "对手"
+    },
+    {
+      "source": 6,
+      "target": 11,
+      "type": "对手"
+    },
+    {
+      "source": 6,
+      "target": 15,
+      "type": "对手"
+    },
+    {
+      "source": 6,
+      "target": 16,
+      "type": "对手"
+    },
+    {
+      "source": 6,
+      "target": 17,
+      "type": "对手"
+    },
+    {
+      "source": 10,
+      "target": 15,
+      "type": "对手"
+    },
+    {
+      "source": 10,
+      "target": 17,
+      "type": "对手"
+    },
+    {
+      "source": 15,
+      "target": 16,
+      "type": "对手"
+    },
+    {
+      "source": 15,
+      "target": 17,
+      "type": "对手"
+    },
+    {
+      "source": 16,
+      "target": 17,
+      "type": "对手"
+    },
+    {
+      "source": 6,
+      "target": 21,
+      "type": "对手"
+    },
+    {
+      "source": 6,
+      "target": 25,
+      "type": "对手"
+    },
+    {
+      "source": 6,
+      "target": 27,
+      "type": "对手"
+    },
+    {
+      "source": 6,
+      "target": 28,
+      "type": "对手"
+    },
+    {
+      "source": 6,
+      "target": 29,
+      "type": "对手"
+    },
+    {
+      "source": 6,
+      "target": 30,
+      "type": "对手"
+    },
+    {
+      "source": 6,
+      "target": 31,
+      "type": "对手"
+    },
+    {
+      "source": 6,
+      "target": 32,
+      "type": "对手"
+    },
+    {
+      "source": 6,
+      "target": 33,
+      "type": "对手"
+    },
+    {
+      "source": 6,
+      "target": 34,
+      "type": "对手"
+    },
+    {
+      "source": 6,
+      "target": 35,
+      "type": "对手"
+    },
+    {
+      "source": 6,
+      "target": 36,
+      "type": "对手"
+    },
+    {
+      "source": 6,
+      "target": 37,
+      "type": "对手"
+    },
+    {
+      "source": 6,
+      "target": 38,
+      "type": "对手"
+    },
+    {
+      "source": 6,
+      "target": 40,
+      "type": "对手"
+    },
+    {
+      "source": 10,
+      "target": 21,
+      "type": "对手"
+    },
+    {
+      "source": 10,
+      "target": 25,
+      "type": "对手"
+    },
+    {
+      "source": 10,
+      "target": 27,
+      "type": "对手"
+    },
+    {
+      "source": 10,
+      "target": 28,
+      "type": "对手"
+    },
+    {
+      "source": 10,
+      "target": 29,
+      "type": "对手"
+    },
+    {
+      "source": 10,
+      "target": 30,
+      "type": "对手"
+    },
+    {
+      "source": 10,
+      "target": 31,
+      "type": "对手"
+    },
+    {
+      "source": 10,
+      "target": 32,
+      "type": "对手"
+    },
+    {
+      "source": 10,
+      "target": 33,
+      "type": "对手"
+    },
+    {
+      "source": 10,
+      "target": 34,
+      "type": "对手"
+    },
+    {
+      "source": 10,
+      "target": 35,
+      "type": "对手"
+    },
+    {
+      "source": 10,
+      "target": 36,
+      "type": "对手"
+    },
+    {
+      "source": 10,
+      "target": 37,
+      "type": "对手"
+    },
+    {
+      "source": 10,
+      "target": 38,
+      "type": "对手"
+    },
+    {
+      "source": 10,
+      "target": 40,
+      "type": "对手"
+    },
+    {
+      "source": 41,
+      "target": 25,
+      "type": "父子"
+    },
+    {
+      "source": 41,
+      "target": 26,
+      "type": "父子"
+    },
+    {
+      "source": 41,
+      "target": 27,
+      "type": "父子"
+    },
+    {
+      "source": 41,
+      "target": 1,
+      "type": "对手"
+    },
+    {
+      "source": 41,
+      "target": 4,
+      "type": "对手"
+    },
+    {
+      "source": 41,
+      "target": 6,
+      "type": "对手"
+    },
+    {
+      "source": 41,
+      "target": 10,
+      "type": "对手"
+    },
+    {
+      "source": 41,
+      "target": 17,
+      "type": "对手"
+    },
+    {
+      "source": 41,
+      "target": 15,
+      "type": "对手"
+    },
+    {
+      "source": 41,
+      "target": 16,
       "type": "对手"
     }
   ]

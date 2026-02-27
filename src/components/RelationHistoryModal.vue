@@ -104,50 +104,52 @@ watch(() => props.content, (newVal) => {
     title="人物关系经历"
     width="600px"
     destroy-on-close
+    :append-to-body="true"
     @update:model-value="emit('update:visible', $event)"
   >
-    <div class="relation-history-content">
-      <!-- 总结部分 -->
-      <div v-if="summary" class="summary-section">
-        <div class="summary-title">
-          <el-icon><Star /></el-icon>
-          <span>关系总结</span>
-        </div>
-        <div class="summary-text">
-          {{ summary }}
-        </div>
-      </div>
-
-      <!-- 事件列表部分 -->
-      <div v-if="events.length > 0" class="events-list">
-        <div class="events-title">
-          <el-icon><List /></el-icon>
-          <span>历史事件（{{ events.length }}）</span>
-        </div>
-
-        <div
-          v-for="event in events"
-          :key="event.id"
-          class="event-item"
-        >
-          <div class="event-header">
-            <span class="event-number">{{ events.indexOf(event) + 1 }}</span>
-            <span v-if="event.time" class="event-time">{{ event.time }}</span>
+      <div class="relation-history-content" @click.stop>
+        <!-- 总结部分 -->
+        <div v-if="summary" class="summary-section">
+          <div class="summary-title">
+            <el-icon><Star /></el-icon>
+            <span>关系总结</span>
           </div>
-          <div class="event-description">
-            {{ event.description || '无描述' }}
-          </div>
-          <div v-if="event.impact" class="event-impact">
-            <el-icon><InfoFilled /></el-icon>
-            <span>影响：{{ event.impact }}</span>
+          <div class="summary-text">
+            {{ summary }}
           </div>
         </div>
-      </div>
 
-      <div v-else class="loading-text">
-        <p>加载中...</p>
+        <!-- 事件列表部分 -->
+        <div v-if="events.length > 0" class="events-list">
+          <div class="events-title">
+            <el-icon><List /></el-icon>
+            <span>历史事件（{{ events.length }}）</span>
+          </div>
+
+          <div
+            v-for="event in events"
+            :key="event.id"
+            class="event-item"
+            @click.stop
+          >
+            <div class="event-header">
+              <span class="event-number">{{ events.indexOf(event) + 1 }}</span>
+              <span v-if="event.time" class="event-time">{{ event.time }}</span>
+            </div>
+            <div class="event-description">
+              {{ event.description || '无描述' }}
+            </div>
+            <div v-if="event.impact" class="event-impact" @click.stop>
+              <el-icon><InfoFilled /></el-icon>
+              <span>影响：{{ event.impact }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div v-else class="loading-text">
+          <p>加载中...</p>
+        </div>
       </div>
-    </div>
 
     <template #footer>
       <el-button type="primary" @click="handleClose">

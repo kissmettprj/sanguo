@@ -13,7 +13,7 @@ export const FILL_COLORS = {
   [FACTIONS.WEI]: '#1E90FF',    // 魏 - 蓝色
   [FACTIONS.SHU]: '#228B22',    // 蜀 - 绿色
   [FACTIONS.WU]: '#FF8C00',     // 吴 - 橙色
-  [FACTIONS.UNKNOWN]: '#808080', // 未知 - 灰色
+  [FACTIONS.UNKNOWN]: '#cccccc', // 未知 - 灰色
 };
 
 // 获取节点样式
