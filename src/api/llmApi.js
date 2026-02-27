@@ -58,8 +58,19 @@ export async function getCharacterInfo(characterName) {
 
 // 获取两人物间的相交经历
 export async function getRelationHistory(char1Name, char2Name) {
-  const prompt = `请介绍三国时期人物${char1Name}与${char2Name}之间的交集经历、重要事件和相互关系，控制在 200 字以内。`;
-  const systemPrompt = '你是一位精通三国历史的历史学家，请用简洁专业的语言回答。';
+  const prompt = `请详细介绍三国时期人物${char1Name}与${char2Name}之间的交集经历、重要事件和相互关系。
+
+要求：
+1. 按时间顺序列出他们的主要交往事件
+2. 每个事件包含：时间、事件描述、对双方的影响
+3. 最后总结两人的关系特点和相互影响
+4. 格式要清晰易读，使用序号标注时间顺序
+
+示例格式：
+1. 时间：事件描述。影响：...
+2. 时间：事件描述。影响：...
+...`;
+  const systemPrompt = '你是一位精通三国历史的历史学家，请用专业、详细、准确的语言回答，事件描述要具体，时间要清晰。';
   
   try {
     const result = await callLLM(prompt, systemPrompt);
