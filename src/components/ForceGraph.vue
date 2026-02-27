@@ -136,8 +136,8 @@ const renderGraph = () => {
     .data(data.links)
     .enter().append('line')
     .attr('class', 'links')
-    .attr('stroke', '#999')
-    .attr('stroke-width', 1.5)
+    .attr('stroke', '#ccc')
+    .attr('stroke-width', 1)
     .attr('marker-end', 'url(#arrow)')
 
   // 绘制节点
