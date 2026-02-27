@@ -104,7 +104,7 @@ watch(() => props.content, (newVal) => {
 <template>
   <el-dialog
     :model-value="visible"
-    :title="isMobile() ? '关系经历' : '人物关系经历'"
+    :title="partner ? `${selectedCharacter?.name} 与 ${partner}` : '人物关系经历'"
     :width="isMobile() ? '90%' : '600px'"
     destroy-on-close
     :append-to-body="true"
