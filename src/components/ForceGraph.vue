@@ -4,6 +4,7 @@ import * as d3 from 'd3'
 import { useCharacterStore } from '@/stores/characterStore'
 import { getNodeStyle } from '@/utils/colors'
 import { ElMessage } from 'element-plus'
+import { ZoomIn, ZoomOut, RefreshRight } from '@element-plus/icons-vue'
 
 const characterStore = useCharacterStore()
 
@@ -13,6 +14,8 @@ let simulation = null
 let nodes = null
 let links = null
 let nodeElements = null
+let zoom = null
+let transformGroup = null
 const emit = defineEmits(['character-click'])
 
 const width = 800
@@ -88,6 +91,23 @@ const initForceGraph = () => {
   nodes = svg.append('g')
     .attr('class', 'nodes')
 
+  // 创建变换组（用于缩放和平移）
+  transformGroup = svg.append('g')
+
+  // 创建缩放
+  zoom = d3.zoom()
+    .scaleExtent([0.1, 4])
+    .on('zoom', (event) => {
+      transformGroup.attr('transform', event.transform)
+    })
+  svg.call(zoom)
+    .on('dblclick.zoom', null) // 禁用双击缩放
+    .on('wheel.zoom', (event) => {
+      event.preventDefault()
+      const delta = event.deltaY > 0 ? -0.1 : 0.1
+      zoom.scaleBy(svg.transition().duration(150), 1 + delta)
+    })
+
   // 渲染图形
   renderGraph()
 }
@@ -101,6 +121,9 @@ const renderGraph = () => {
     links: characterStore.relationships
   }
 
+  // 清空变换组中的内容
+  transformGroup.selectAll('*').remove()
+
   // 创建力导向图
   simulation = d3.forceSimulation(data.nodes)
     .force('link', d3.forceLink(data.links).id(d => d.id).distance(120))
@@ -109,15 +132,16 @@ const renderGraph = () => {
     .force('collide', d3.forceCollide(40))
 
   // 绘制连线
-  const linkElements = links.selectAll('line')
+  const linkElements = transformGroup.selectAll('line')
     .data(data.links)
     .enter().append('line')
+    .attr('class', 'links')
     .attr('stroke', '#999')
     .attr('stroke-width', 1.5)
     .attr('marker-end', 'url(#arrow)')
 
   // 绘制节点
-  nodeElements = nodes.selectAll('g')
+  nodeElements = transformGroup.selectAll('g.node')
     .data(data.nodes)
     .enter().append('g')
     .attr('class', 'node')
@@ -241,6 +265,25 @@ const dragEnded = (event, d) => {
   }
 }
 
+// 缩放控制函数
+const zoomIn = () => {
+  if (zoom) {
+    zoom.scaleBy(svg.transition().duration(200), 1.2)
+  }
+}
+
+const zoomOut = () => {
+  if (zoom) {
+    zoom.scaleBy(svg.transition().duration(200), 0.8)
+  }
+}
+
+const resetZoom = () => {
+  if (zoom) {
+    zoom.transform(svg.transition().duration(300), d3.zoomIdentity)
+  }
+}
+
 // 监听数据变化
 watch(() => characterStore.characters.length, (newLen) => {
   if (newLen > 0) {
@@ -309,6 +352,29 @@ const handleBackgroundClick = () => {
 <template>
   <div class="force-graph-container" @click="handleBackgroundClick">
     <svg ref="svgRef" class="force-graph"></svg>
+    <div class="zoom-controls">
+      <el-button
+        class="zoom-btn"
+        @click="zoomIn"
+        :title="'放大'"
+      >
+        <el-icon :size="18"><ZoomIn /></el-icon>
+      </el-button>
+      <el-button
+        class="zoom-btn"
+        @click="zoomOut"
+        :title="'缩小'"
+      >
+        <el-icon :size="18"><ZoomOut /></el-icon>
+      </el-button>
+      <el-button
+        class="zoom-btn reset"
+        @click="resetZoom"
+        :title="'重置'"
+      >
+        <el-icon :size="18"><RefreshRight /></el-icon>
+      </el-button>
+    </div>
     <div v-if="characterStore.isLoading" class="loading-overlay">
       <span class="loading-text">加载中...</span>
     </div>
@@ -331,6 +397,65 @@ const handleBackgroundClick = () => {
 
 .force-graph:active {
   cursor: grabbing;
+}
+
+/* 缩放控制按钮 */
+.zoom-controls {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 100;
+  align-items: center;
+  padding: 8px 0;
+  /* background: rgba(255, 255, 255, 0.9); */
+  /* border-radius: 8px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+  border: 1px solid #e4e7ed; */
+}
+
+.zoom-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background: white;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+  border: 1px solid #e4e7ed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  padding: 0;
+  flex-shrink: 0;
+  min-width: 40px;
+  margin: 0;
+}
+
+.zoom-btn :deep(.el-icon) {
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.zoom-btn:hover {
+  background: #f5f7fa;
+  border-color: #c6e2ff;
+  color: #409eff;
+  transform: scale(1.05);
+}
+
+.zoom-btn:active {
+  transform: scale(0.95);
+}
+
+.zoom-btn.reset:hover {
+  background: #ecf5ff;
+  border-color: #409eff;
+  color: #409eff;
 }
 
 .loading-overlay {
@@ -368,5 +493,38 @@ const handleBackgroundClick = () => {
 
 .node text {
   user-select: none;
+}
+
+/* 移动端缩放控制按钮 */
+@media (max-width: 767px) {
+  .zoom-controls {
+    top: 16px;
+    right: 16px;
+    gap: 6px;
+    padding: 6px 0;
+    border-radius: 6px;
+  }
+
+  .zoom-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 6px;
+  }
+
+  .zoom-btn :deep(.el-icon) {
+    font-size: 16px;
+  }
+}
+
+/* 移动端优化触摸体验 */
+@media (max-width: 767px) {
+  .zoom-controls {
+    touch-action: manipulation;
+  }
+
+  .zoom-btn {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
 }
 </style>
