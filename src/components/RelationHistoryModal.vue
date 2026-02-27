@@ -1,8 +1,8 @@
 <script setup>
 import { ref, watch } from 'vue'
-import { InfoFilled } from '@element-plus/icons-vue'
+import { InfoFilled, Star, List } from '@element-plus/icons-vue'
 
-defineProps({
+const props = defineProps({
   visible: {
     type: Boolean,
     default: false
@@ -27,60 +27,75 @@ const handleClose = () => {
   emit('update:visible', false)
 }
 
-// 解析事件列表
-const parseEvents = (text) => {
-  if (!text) return []
+// 解析 JSON 格式的事件列表
+const parseData = (text) => {
+  console.log('开始解析 JSON:', text)
 
-  try {
-    // 尝试解析 JSON 格式
-    if (text.trim().startsWith('{')) {
-      const data = JSON.parse(text)
-      if (Array.isArray(data.events)) {
-        return data.events.map(e => ({
-          time: e.time || '',
-          description: e.description || '',
-          impact: e.impact || ''
-        }))
-      }
-    }
-  } catch (e) {
-    // JSON 解析失败，尝试解析文本格式
+  if (!text) {
+    console.log('内容为空')
+    return { summary: '', events: [] }
   }
 
-  // 解析文本格式：按行分割，提取序号和时间
-  const lines = text.split('\n').filter(line => line.trim())
-  const events = []
+  try {
+    // 尝试解析 JSON
+    const data = JSON.parse(text)
+    console.log('解析的 JSON 数据:', data)
 
-  lines.forEach((line, index) => {
-    // 提取序号
-    const match = line.match(/^(\d+)\.\s*(.*)/)
-    if (match) {
-      const time = match[1] + '年' // 提取序号作为时间
-      const description = match[2]
+    const summary = data.summary || ''
+    const events = Array.isArray(data.events) ? data.events.map((e, index) => ({
+      id: index,
+      time: e.time || e.date || '',
+      description: e.description || e.event || e.content || '',
+      impact: e.impact || e.influence || e.result || ''
+    })) : []
 
-      // 尝试提取影响信息
-      let impact = ''
-      const impactMatch = line.match(/影响[:：]\s*(.+)$/)
-      if (impactMatch) {
-        impact = impactMatch[1].trim()
-      }
-
-      events.push({
-        time,
-        description,
-        impact
-      })
+    console.log('解析成功：总结：', summary, '事件数量：', events.length)
+    return { summary, events }
+  } catch (e) {
+    console.error('JSON 解析失败:', e.message)
+    console.error('原始内容:', text)
+    // 返回默认的数据
+    return {
+      summary: '...',
+      events: []
     }
-  })
+  }
 
-  return events
+  console.log('未找到 events 数组')
+  return { summary: '', events: [] }
 }
 
+const summary = ref('')
 const events = ref([])
 
+// 监听 visible 变化
+watch(() => props.visible, (newVal) => {
+  console.log('弹窗可见性变化:', newVal)
+
+  if (newVal) {
+    summary.value = ''
+    events.value = []
+    if (props.content) {
+      const { summary: parsedSummary, events: parsedEvents } = parseData(props.content)
+      summary.value = parsedSummary
+      events.value = parsedEvents
+    }
+  } else {
+    summary.value = ''
+    events.value = []
+  }
+}, { immediate: false })
+
+// 监听 content 变化
 watch(() => props.content, (newVal) => {
-  events.value = parseEvents(newVal)
-}, { immediate: true, deep: true })
+  console.log('内容变化:', newVal)
+
+  if (props.visible && newVal) {
+    const { summary: parsedSummary, events: parsedEvents } = parseData(newVal)
+    summary.value = parsedSummary
+    events.value = parsedEvents
+  }
+}, { immediate: false })
 </script>
 
 <template>
@@ -92,23 +107,35 @@ watch(() => props.content, (newVal) => {
     @update:model-value="emit('update:visible', $event)"
   >
     <div class="relation-history-content">
-      <p class="relation-info">
-        <strong>{{ selectedCharacter?.name }}</strong> 与 
-        <strong>{{ partner }}</strong> 的关系
-      </p>
+      <!-- 总结部分 -->
+      <div v-if="summary" class="summary-section">
+        <div class="summary-title">
+          <el-icon><Star /></el-icon>
+          <span>关系总结</span>
+        </div>
+        <div class="summary-text">
+          {{ summary }}
+        </div>
+      </div>
 
+      <!-- 事件列表部分 -->
       <div v-if="events.length > 0" class="events-list">
+        <div class="events-title">
+          <el-icon><List /></el-icon>
+          <span>历史事件（{{ events.length }}）</span>
+        </div>
+
         <div
-          v-for="(event, index) in events"
-          :key="index"
+          v-for="event in events"
+          :key="event.id"
           class="event-item"
         >
           <div class="event-header">
-            <span class="event-number">{{ index + 1 }}</span>
+            <span class="event-number">{{ events.indexOf(event) + 1 }}</span>
             <span v-if="event.time" class="event-time">{{ event.time }}</span>
           </div>
           <div class="event-description">
-            {{ event.description }}
+            {{ event.description || '无描述' }}
           </div>
           <div v-if="event.impact" class="event-impact">
             <el-icon><InfoFilled /></el-icon>
@@ -133,24 +160,64 @@ watch(() => props.content, (newVal) => {
 <style scoped>
 .relation-history-content {
   padding: 20px 0;
+  max-height: 70vh;
+  overflow-y: auto;
 }
 
-.relation-info {
-  margin-bottom: 20px;
+/* 总结部分样式 */
+.summary-section {
+  margin-bottom: 24px;
+  padding: 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 8px;
+  color: white;
+}
+
+.summary-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 12px;
+}
+
+.summary-title span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.summary-text {
   font-size: 14px;
-  color: #606266;
+  line-height: 1.8;
+  color: rgba(255, 255, 255, 0.95);
 }
 
-.relation-info strong {
-  color: #303133;
-}
-
+/* 事件列表样式 */
 .events-list {
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
+.events-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #303133;
+  margin-bottom: 12px;
+}
+
+.events-title span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* 事件卡片样式 */
 .event-item {
   padding: 16px;
   background: #f5f7fa;
@@ -191,11 +258,13 @@ watch(() => props.content, (newVal) => {
   line-height: 1.6;
   color: #303133;
   margin-bottom: 8px;
+  white-space: pre-wrap;
+  word-wrap: break-word;
 }
 
 .event-impact {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 6px;
   font-size: 12px;
   color: #67c23a;
@@ -206,11 +275,31 @@ watch(() => props.content, (newVal) => {
 
 .event-impact span {
   color: #409eff;
+  word-wrap: break-word;
 }
 
 .loading-text {
   text-align: center;
   color: #909399;
   padding: 40px 20px;
+}
+
+/* 滚动条样式 */
+.relation-history-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.relation-history-content::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.relation-history-content::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+.relation-history-content::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
 }
 </style>

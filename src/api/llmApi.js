@@ -61,23 +61,47 @@ export async function getRelationHistory(char1Name, char2Name) {
   const prompt = `请详细介绍三国时期人物${char1Name}与${char2Name}之间的交集经历、重要事件和相互关系。
 
 要求：
-1. 按时间顺序列出他们的主要交往事件
-2. 每个事件包含：时间、事件描述、对双方的影响
-3. 最后总结两人的关系特点和相互影响
-4. 格式要清晰易读，使用序号标注时间顺序
+1. 按时间顺序列出他们的主要交往事件（每个事件包含：时间、事件描述、对双方的影响）
+2. 最后总结两人的关系特点和相互影响
+3. 返回标准的 JSON 格式，包含 summary 和 events 两个字段
 
-示例格式：
-1. 时间：事件描述。影响：...
-2. 时间：事件描述。影响：...
-...`;
-  const systemPrompt = '你是一位精通三国历史的历史学家，请用专业、详细、准确的语言回答，事件描述要具体，时间要清晰。';
-  
+请严格按照以下 JSON 格式返回，不要返回任何其他文字：
+
+{
+  "summary": "两人关系的总结文字",
+  "events": [
+    {
+      "time": "公元189年",
+      "description": "详细的事件描述，描述事件的具体过程和细节",
+      "impact": "对双方的具体影响"
+    }
+  ]
+}
+
+注意：
+- summary 必须总结两人的关系特点、相互影响和重要性
+- time 必须是具体的时间，如"公元189年"、"公元190年"等
+- description 是事件的详细描述，要包含具体过程、细节和背景
+- impact 是事件对双方的具体影响，要详细说明影响的内容和程度
+- events 数组按时间顺序排列
+- 不要包含任何其他文字说明`;
+
+  const systemPrompt = '你是一位精通三国历史的历史学家，请用专业、准确、详细的语言回答，并严格按照指定的 JSON 格式返回数据，不要添加任何其他文字或解释。';
+
   try {
     const result = await callLLM(prompt, systemPrompt);
+    console.log('LLM 返回的原始内容:', result);
     return result;
   } catch (error) {
     ElMessage.warning('获取关系经历失败，请稍后重试');
-    return `关于${char1Name}与${char2Name}的关系经历暂不可用。`;
+    return JSON.stringify({
+      summary: `关于${char1Name}与${char2Name}的关系经历暂不可用。`,
+      events: [{
+        time: '',
+        description: '',
+        impact: ''
+      }]
+    });
   }
 }
 

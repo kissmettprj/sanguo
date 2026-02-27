@@ -7,12 +7,26 @@ import RelationHistoryModal from '@/components/RelationHistoryModal.vue'
 
 const characterStore = useCharacterStore()
 
-// 相关人物点击事件
-const handleRelatedClick = (relation) => {
+// 相关人物点击事件（打开弹框）
+const handleRelatedCardClick = (relation) => {
   if (!relation.character) return
+
+  // 设置当前关系
+  characterStore.currentRelation = relation
 
   // 显示相交经历弹窗
   showRelationHistory(relation)
+}
+
+// 点击详情链接切换人物
+const handleDetailClick = (relation) => {
+  if (!relation.character) return
+
+  // 切换到该人物
+  characterStore.selectedCharacter = relation.character
+
+  // 加载该人物的信息
+  loadCharacterInfo(relation.character)
 }
 
 // 显示相交经历弹窗
@@ -42,25 +56,18 @@ const showRelationHistory = async (relation) => {
   }
 }
 
-// 双击相关人物切换
-const handleRelatedDblclick = (relation) => {
-  if (!relation.character) return
-  characterStore.selectedCharacter = relation.character
-  loadCharacterInfo(relation.character)
-}
-
 // 加载人物信息
 const loadCharacterInfo = async (character) => {
   characterStore.setLoading(true)
-  
+
   try {
     // 先获取相关人物（不依赖大模型API）
     const related = characterStore.getRelatedCharactersExtended(character.id)
     characterStore.relatedCharacters = related
-    
+
     // 立即取消 loading，显示相关人物
     characterStore.setLoading(false)
-    
+
     // 获取人物简介（异步调用大模型API）
     const { getCharacterInfo } = await import('@/api/llmApi')
     const info = await getCharacterInfo(character.name)
@@ -133,16 +140,21 @@ const currentInfo = computed(() => {
             v-for="relation in displayRelations"
             :key="relation.character?.id"
             class="relation-item"
-            @click="handleRelatedClick(relation)"
-            @dblclick="handleRelatedDblclick(relation)"
           >
-            <div class="relation-avatar">
+            <div class="relation-avatar" @click="handleRelatedCardClick(relation)">
               <el-icon size="30"><UserFilled /></el-icon>
             </div>
-            <div class="relation-info">
+            <div class="relation-info" @click="handleRelatedCardClick(relation)">
               <div class="relation-name">{{ relation.character?.name }}</div>
               <div class="relation-type">{{ relation.type }}</div>
             </div>
+            <el-link
+              type="primary"
+              class="detail-link"
+              @click.stop="handleDetailClick(relation)"
+            >
+              详情
+            </el-link>
           </div>
           <p v-if="displayRelations.length === 0" class="no-relations">暂无相关人物</p>
         </div>
@@ -151,7 +163,7 @@ const currentInfo = computed(() => {
 
       <div class="tip">
         <el-icon><InfoFilled /></el-icon>
-        提示：点击相关人物查看关系经历，双击切换为当前人物
+        提示：点击"详情"切换人物，点击卡片其他部分查看关系经历
       </div>
     </div>
 
@@ -286,6 +298,11 @@ const currentInfo = computed(() => {
   transform: translateX(4px);
 }
 
+.relation-avatar,
+.relation-info {
+  cursor: pointer;
+}
+
 .relation-avatar {
   width: 45px;
   height: 45px;
@@ -295,21 +312,40 @@ const currentInfo = computed(() => {
   align-items: center;
   justify-content: center;
   color: #667eea;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+
+.relation-avatar:hover {
+  transform: scale(1.1);
 }
 
 .relation-info {
   flex: 1;
+  min-width: 0;
 }
 
 .relation-name {
   font-weight: 600;
   color: #303133;
   margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .relation-type {
   font-size: 12px;
   color: #909399;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.detail-link {
+  flex-shrink: 0;
+  margin-left: 12px;
+  cursor: pointer;
 }
 
 .no-relations {
