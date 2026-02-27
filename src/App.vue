@@ -1,10 +1,14 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
+import { Close } from '@element-plus/icons-vue'
 import ForceGraph from '@/components/ForceGraph.vue'
 import SideBar from '@/components/SideBar.vue'
 
 const sidebarVisible = ref(false)
 const selectedCharacter = ref(null)
+
+// 移动端判断
+const isMobile = () => window.innerWidth < 768
 
 // 点击人物圆圈
 const handleCharacterClick = (character) => {
@@ -26,8 +30,12 @@ const handleBackgroundClick = () => {
       <SideBar
         v-model:visible="sidebarVisible"
         :character="selectedCharacter"
+        :is-mobile="isMobile()"
       />
     </main>
+
+    <!-- 移动端遮罩层 -->
+    <div v-if="isMobile() && sidebarVisible" class="mobile-overlay" @click="handleBackgroundClick"></div>
   </div>
 </template>
 
@@ -43,5 +51,12 @@ const handleBackgroundClick = () => {
   flex: 1;
   display: flex;
   overflow: hidden;
+}
+
+/* 移动端适配 */
+@media (max-width: 767px) {
+  .sanguo-app {
+    height: 100dvh;
+  }
 }
 </style>

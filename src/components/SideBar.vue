@@ -1,8 +1,8 @@
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, ref, onMounted, onBeforeUnmount } from 'vue'
 import { useCharacterStore } from '@/stores/characterStore'
 import { getFactionName, getRoleName } from '@/utils/colors'
-import { ElMessage } from 'element-plus'
+import { ElMessage, Close } from 'element-plus'
 import RelationHistoryModal from '@/components/RelationHistoryModal.vue'
 
 const characterStore = useCharacterStore()
@@ -11,6 +11,10 @@ const props = defineProps({
   character: {
     type: Object,
     default: null
+  },
+  isMobile: {
+    type: Boolean,
+    default: false
   }
 })
 const emit = defineEmits(['character-click'])
@@ -104,10 +108,15 @@ const currentCharacter = computed(() => {
 const currentInfo = computed(() => {
   return characterStore.characterInfo || '暂无简介'
 })
+
+// 移动端关闭按钮
+const handleMobileClose = () => {
+  emit('character-click', null)
+}
 </script>
 
 <template>
-  <div :class="{ 'side-bar':true, 'side-bar-open': sidebarVisible }">
+  <div :class="{ 'side-bar':true, 'side-bar-open': sidebarVisible, 'mobile': isMobile }">
     <div v-if="!currentCharacter" class="empty-state">
       <div class="empty-icon">
         <el-icon><User /></el-icon>
@@ -116,6 +125,11 @@ const currentInfo = computed(() => {
     </div>
 
     <div v-else class="content">
+      <!-- 移动端关闭按钮 -->
+      <button v-if="isMobile" class="mobile-close-btn" @click="handleMobileClose">
+        <el-icon><Close /></el-icon>
+      </button>
+
       <div class="header">
         <div class="avatar">
           <el-icon size="40"><User /></el-icon>
@@ -188,8 +202,66 @@ const currentInfo = computed(() => {
 </template>
 
 <style scoped>
-.side-bar { transition: width 0.3s ease; width: 0; overflow: hidden; cursor: pointer;}
+.side-bar {
+  transition: width 0.3s ease, transform 0.3s ease;
+  width: 0;
+  overflow: hidden;
+  cursor: pointer;
+}
 
+.side-bar-open {
+  width: 320px;
+  cursor: default;
+  overflow-y: auto;
+  overflow-x: hidden;
+  height: 100%;
+  position: relative;
+}
+
+/* 移动端样式 */
+.side-bar.mobile {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  max-width: 400px;
+  height: 100dvh;
+  z-index: 1000;
+  background: white;
+  transform: translateX(-100%);
+  box-shadow: 4px 0 16px rgba(0, 0, 0, 0.15);
+}
+
+.side-bar.mobile.side-bar-open {
+  transform: translateX(0);
+}
+
+/* 移动端关闭按钮 */
+.mobile-close-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  color: #606266;
+}
+
+.mobile-close-btn:hover {
+  background: rgba(0, 0, 0, 0.1);
+  color: #303133;
+}
+
+.mobile-close-btn :deep(.el-icon) {
+  font-size: 18px;
+}
 
 .empty-state {
   flex: 1;
@@ -205,16 +277,6 @@ const currentInfo = computed(() => {
   margin-bottom: 20px;
   color: #dcdfe6;
 }
-
-.side-bar-open {
-  width: 320px;
-  cursor: default;
-  overflow-y: auto;
-  overflow-x: hidden;
-  height: 100%;
-  position: relative;
-}
-
 
 .content {
   padding: 20px;
@@ -275,7 +337,6 @@ const currentInfo = computed(() => {
   width: 320px;
   cursor: default;
 }
-
 
 .info-content {
   background: #f5f7fa;
@@ -411,5 +472,34 @@ const currentInfo = computed(() => {
 
 .side-bar::-webkit-scrollbar-thumb:hover {
   background: #a8a8a8;
+}
+
+/* 移动端滚动条样式 */
+.side-bar.mobile::-webkit-scrollbar {
+  width: 4px;
+}
+
+.side-bar.mobile::-webkit-scrollbar-track {
+  background: #f5f5f5;
+}
+
+.side-bar.mobile::-webkit-scrollbar-thumb {
+  background: #d1d1d1;
+  border-radius: 2px;
+}
+
+.side-bar.mobile::-webkit-scrollbar-thumb:hover {
+  background: #b8b8b8;
+}
+
+/* 移动端遮罩层 */
+.mobile-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
 }
 </style>

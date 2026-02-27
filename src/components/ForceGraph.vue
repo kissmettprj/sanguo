@@ -18,6 +18,40 @@ const emit = defineEmits(['character-click'])
 const width = 800
 const height = 600
 
+// 移动端适配
+const isMobile = () => window.innerWidth < 768
+
+// 调整力导向图大小
+const adjustSize = () => {
+  if (svg) {
+    const w = isMobile() ? Math.min(window.innerWidth - 20, 600) : width
+    const h = isMobile() ? Math.min(window.innerHeight - 100, 500) : height
+    svg.attr('width', w)
+      .attr('height', h)
+      .attr('viewBox', [0, 0, w, h])
+
+    // 更新力导向图中心
+    if (simulation) {
+      simulation.force('center', d3.forceCenter(w / 2, h / 2))
+      simulation.alpha(0.3).restart()
+    }
+
+    // 更新节点大小
+    if (nodeElements) {
+      nodeElements.select('circle')
+        .attr('r', isMobile() ? 25 : 35)
+    }
+
+    // 更新连线距离
+    if (simulation) {
+      simulation.force('link', d3.forceLink(characterStore.relationships)
+        .id(d => d.id)
+        .distance(isMobile() ? 80 : 120))
+      simulation.alpha(0.3).restart()
+    }
+  }
+}
+
 // 初始化力导向图
 const initForceGraph = () => {
   if (!svgRef.value) return
@@ -244,11 +278,15 @@ onMounted(() => {
   characterStore.loadData()
     .then(() => {
       initForceGraph()
+      adjustSize()
     })
     .catch(err => {
       console.error('初始化失败:', err)
       ElMessage.error('加载数据失败，请刷新重试')
     })
+
+  // 监听窗口大小变化
+  window.addEventListener('resize', adjustSize)
 })
 
 onBeforeUnmount(() => {
@@ -258,6 +296,7 @@ onBeforeUnmount(() => {
   if (svg) {
     svg.selectAll('*').remove()
   }
+  window.removeEventListener('resize', adjustSize)
 })
 
 // 点击背景清空选择
