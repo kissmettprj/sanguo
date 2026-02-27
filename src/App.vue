@@ -6,7 +6,7 @@ import SideBar from '@/components/SideBar.vue'
 <template>
   <div class="sanguo-app">
     <header class="app-header">
-      <h1>三国人物关系力图</h1>
+      <h1>图说三国</h1>
     </header>
     <main class="app-main">
       <ForceGraph />

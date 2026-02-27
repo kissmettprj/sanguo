@@ -161,23 +161,26 @@ const loadCharacterInfo = async (character) => {
   console.log('加载人物信息:', character)
   console.log('人物数据:', characterStore.characters)
   console.log('关系数据:', characterStore.relationships)
-  
+
   characterStore.setLoading(true)
-  
+
   try {
-    // 获取相关人物（不依赖大模型API，直接从数据加载）
+    // 先获取相关人物（不依赖大模型API）
     const related = characterStore.getRelatedCharactersExtended(character.id)
     console.log('相关人物:', related)
     characterStore.relatedCharacters = related
-    
+
+    // 立即取消 loading，显示相关人物
+    characterStore.setLoading(false)
+
     // 获取人物简介（异步调用大模型API）
     const { getCharacterInfo } = await import('@/api/llmApi')
     const info = await getCharacterInfo(character.name)
     characterStore.setCharacterInfo(info)
+    characterStore.currentRelation = null
   } catch (error) {
     console.error('加载人物信息失败:', error)
     ElMessage.error('加载人物信息失败')
-  } finally {
     characterStore.setLoading(false)
   }
 }

@@ -10,7 +10,7 @@ const characterStore = useCharacterStore()
 // 相关人物点击事件
 const handleRelatedClick = (relation) => {
   if (!relation.character) return
-  
+
   // 显示相交经历弹窗
   showRelationHistory(relation)
 }
@@ -22,7 +22,12 @@ const relationHistoryPartner = ref('')
 
 const showRelationHistory = async (relation) => {
   if (!relation.character) return
-  
+
+  // 立即显示弹窗，显示加载中
+  relationHistoryContent.value = '加载中...'
+  relationHistoryPartner.value = relation.character.name
+  relationHistoryModal.value = true
+
   try {
     const { getRelationHistory } = await import('@/api/llmApi')
     const history = await getRelationHistory(
@@ -30,17 +35,12 @@ const showRelationHistory = async (relation) => {
       relation.character.name
     )
     relationHistoryContent.value = history
-    relationHistoryPartner.value = relation.character.name
-    characterStore.currentRelation = null
-    relationHistoryModal.value = true
   } catch (error) {
     console.error('加载关系经历失败:', error)
+    relationHistoryContent.value = '加载关系经历失败，请稍后重试'
     ElMessage.error('加载关系经历失败')
   }
 }
-
-
-
 
 // 双击相关人物切换
 const handleRelatedDblclick = (relation) => {
@@ -54,9 +54,12 @@ const loadCharacterInfo = async (character) => {
   characterStore.setLoading(true)
   
   try {
-    // 获取相关人物（不依赖大模型API，直接从数据加载）
+    // 先获取相关人物（不依赖大模型API）
     const related = characterStore.getRelatedCharactersExtended(character.id)
     characterStore.relatedCharacters = related
+    
+    // 立即取消 loading，显示相关人物
+    characterStore.setLoading(false)
     
     // 获取人物简介（异步调用大模型API）
     const { getCharacterInfo } = await import('@/api/llmApi')
@@ -66,7 +69,6 @@ const loadCharacterInfo = async (character) => {
   } catch (error) {
     console.error('加载人物信息失败:', error)
     ElMessage.error('加载人物信息失败')
-  } finally {
     characterStore.setLoading(false)
   }
 }
@@ -146,7 +148,7 @@ const currentInfo = computed(() => {
         </div>
         <div v-else class="loading-relations">加载中...</div>
       </div>
-      
+
       <div class="tip">
         <el-icon><InfoFilled /></el-icon>
         提示：点击相关人物查看关系经历，双击切换为当前人物
@@ -154,8 +156,8 @@ const currentInfo = computed(() => {
     </div>
 
     <!-- 相交经历弹窗 -->
-    <RelationHistoryModal 
-      v-model:visible="relationHistoryModal" 
+    <RelationHistoryModal
+      v-model:visible="relationHistoryModal"
       :content="relationHistoryContent"
       :partner="relationHistoryPartner"
       :selected-character="characterStore.selectedCharacter"
@@ -308,15 +310,6 @@ const currentInfo = computed(() => {
 .relation-type {
   font-size: 12px;
   color: #909399;
-}
-
-.active-indicator {
-  margin-top: 6px;
-  font-size: 12px;
-  color: #67c23a;
-  display: flex;
-  align-items: center;
-  gap: 4px;
 }
 
 .no-relations {
